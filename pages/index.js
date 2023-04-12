@@ -59,7 +59,7 @@ export default function Home() {
 
     return (
         <div className="max-w-5xl mx-auto pt-16 px-5 md:px-0">
-            <h1 className="font-medium text-2xl">Accessing VSCO&apos;s API</h1>
+            <h1 className="font-medium text-2xl">Accessing VSCO&apos;s API - <a className="underline hover:no-underline text-blue-500" href="https://twitter.com/notlilj" target="_blank" rel="noreferrer">by @notlilj</a></h1>
 
             <p className="text-gray-500 mt-1 mb-3">
                 <a
