@@ -15,10 +15,10 @@ export default function Home() {
 
     function onSubmit(e) {
         e.preventDefault()
-        useSiteId()
+        goSiteId()
     }
 
-    function useSiteId() {
+    function goSiteId() {
         if (username.length === 0 || siteIdData === "loading") return
         setSiteIdData("loading")
         getVSCOSiteInfo(username).then((data) => {
@@ -33,7 +33,7 @@ export default function Home() {
         })
     }
 
-    function useProfilePhotos() {
+    function goProfilePhotos() {
         if (siteId === null || profilePhotos === "loading") return
         setProfilePhotos("loading")
         getVSCOProfilePhotos(siteId).then((data) => {
@@ -41,21 +41,21 @@ export default function Home() {
         })
     }
 
-    function useArticles() {
-        if (siteId === null || articles === "loading") return
-        setArticles("loading")
-        getVSCOArticles(siteId).then((data) => {
-            setArticles(data)
-        })
-    }
-
-    function useReposts() {
-        if (siteId === null || reposts === "loading") return
-        setReposts("loading")
-        getVSCOReposts(siteId).then((data) => {
-            setReposts(data)
-        })
-    }
+    // function goArticles() {
+    //     if (siteId === null || articles === "loading") return
+    //     setArticles("loading")
+    //     getVSCOArticles(siteId).then((data) => {
+    //         setArticles(data)
+    //     })
+    // }
+    //
+    // function goReposts() {
+    //     if (siteId === null || reposts === "loading") return
+    //     setReposts("loading")
+    //     getVSCOReposts(siteId).then((data) => {
+    //         setReposts(data)
+    //     })
+    // }
 
     return (
         <div className="max-w-5xl mx-auto pt-16 px-5 md:px-0">
@@ -123,7 +123,7 @@ export default function Home() {
                 />
                 <button
                     className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg p-2 w-full mt-2"
-                    onClick={useSiteId}
+                    onClick={goSiteId}
                 >
                     {
                         siteIdData === "loading" ? "LOADING" : "SEND REQUEST"
@@ -164,7 +164,7 @@ export default function Home() {
             {
                 siteId && <button
                     className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg p-2 w-full mt-2"
-                    onClick={useProfilePhotos}
+                    onClick={goProfilePhotos}
                 >
                     {
                         profilePhotos === "loading" ? "LOADING" : "SEND REQUEST"
