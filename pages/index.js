@@ -13,6 +13,11 @@ export default function Home() {
     const [articles, setArticles] = useState(null)
     const [reposts, setReposts] = useState(null)
 
+    function onSubmit(e) {
+        e.preventDefault()
+        useSiteId()
+    }
+
     function useSiteId() {
         if (username.length === 0 || siteIdData === "loading") return
         setSiteIdData("loading")
@@ -54,7 +59,7 @@ export default function Home() {
 
     return (
         <div className="max-w-5xl mx-auto pt-16 px-5 md:px-0">
-            <h1 className="font-medium text-2xl">Accessing VSCO's API</h1>
+            <h1 className="font-medium text-2xl">Accessing VSCO&apos;s API</h1>
 
             <p className="text-gray-500 mt-1 mb-3">
                 <a
@@ -67,14 +72,14 @@ export default function Home() {
                 without limitations.
             </p>
             <p className="text-gray-500">
-                The main flaw in the security of VSCO's API is within their authentication. <strong>The API key is a bearer token.
+                The main flaw in the security of VSCO&apos;s API is within their authentication. <strong>The API key is a bearer token.
                 It is not unique, is not tied to a specific user, and does not expire.</strong> This means that anyone can use it
                 for any use, and it will not be revoked.
             </p>
             <br/>
             <small className="text-gray-400">
                 *while public, it is important to note that it should only be used for educational use only.
-                VSCO's <a className="text-blue-300 hover:underline" href="https://vsco.co/about/terms_of_use"
+                VSCO&apos;s <a className="text-blue-300 hover:underline" href="https://vsco.co/about/terms_of_use"
                           target="_blank" rel="noreferrer">terms of service</a> forbids using their services for
                 commercial purposes.
             </small>
@@ -101,18 +106,15 @@ export default function Home() {
             {/* Display Headers */}
             <div className="flex items-center gap-2 mt-2">
                 <small className="text-gray-500 font-mono">
-                    'Content-Type': 'application/json',
+                    &apos;Content-Type&apos;: &apos;application/json&apos;,
                     <br/>
-                    'Accept': 'application/json',
+                    &apos;Accept&apos;: &apos;application/json&apos;,
                     <br/>
-                    'Authorization' : 'Bearer 7356455548d0a1d886db010883388d08be84d0c9'
+                    &apos;Authorization&apos; : &apos;Bearer 7356455548d0a1d886db010883388d08be84d0c9&apos;
                 </small>
             </div>
             <br/>
-            <form onSubmit={(e) => {
-                e.preventDefault()
-                useSiteId()
-            }}>
+            <form onSubmit={onSubmit}>
                 <input
                     className="border border-gray-300 rounded-lg p-2 w-full"
                     placeholder="Enter your VSCO username"
@@ -152,11 +154,11 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2 mt-2">
                 <small className="text-gray-500 font-mono">
-                    'Content-Type': 'application/json',
+                    &apos;Content-Type&apos;: &apos;application/json&apos;,
                     <br/>
-                    'Accept': 'application/json',
+                    &apos;Accept&apos;: &apos;application/json&apos;,
                     <br/>
-                    'Authorization' : 'Bearer 7356455548d0a1d886db010883388d08be84d0c9'
+                    &apos;Authorization&apos; : &apos;Bearer 7356455548d0a1d886db010883388d08be84d0c9&apos;
                 </small>
             </div>
             {
@@ -194,11 +196,11 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2 mt-2">
                 <small className="text-gray-500 font-mono">
-                    'Content-Type': 'application/json',
+                    &apos;Content-Type&apos;: &apos;application/json&apos;,
                     <br/>
-                    'Accept': 'application/json',
+                    &apos;Accept&apos;: &apos;application/json&apos;,
                     <br/>
-                    'Authorization' : 'Bearer 7356455548d0a1d886db010883388d08be84d0c9'
+                    &apos;Authorization&apos; : &apos;Bearer 7356455548d0a1d886db010883388d08be84d0c9&apos;
                 </small>
             </div>
             <h3 className="text-gray-500 text-lg font-medium mt-2">From your reposts</h3>
@@ -211,11 +213,11 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2 mt-2">
                 <small className="text-gray-500 font-mono">
-                    'Content-Type': 'application/json',
+                    &apos;Content-Type&apos;: &apos;application/json&apos;,
                     <br/>
-                    'Accept': 'application/json',
+                    &apos;Accept&apos;: &apos;application/json&apos;,
                     <br/>
-                    'Authorization' : 'Bearer 7356455548d0a1d886db010883388d08be84d0c9'
+                    &apos;Authorization&apos; : &apos;Bearer 7356455548d0a1d886db010883388d08be84d0c9&apos;
                 </small>
             </div>
         </div>
