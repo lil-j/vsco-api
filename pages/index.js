@@ -1,124 +1,223 @@
 import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import {Inter} from 'next/font/google'
+import {useState} from "react";
+import {getVSCOSiteInfo, getVSCOArticles, getVSCOReposts, getVSCOProfilePhotos} from "@/methods";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({subsets: ['latin']})
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">pages/index.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    const [username, setUsername] = useState('')
+    const [siteIdData, setSiteIdData] = useState(null)
+    const [siteId, setSiteId] = useState(null)
+    const [profilePhotos, setProfilePhotos] = useState(null)
+    const [articles, setArticles] = useState(null)
+    const [reposts, setReposts] = useState(null)
+
+    function useSiteId() {
+        if (username.length === 0 || siteIdData === "loading") return
+        setSiteIdData("loading")
+        getVSCOSiteInfo(username).then((data) => {
+            console.log(data)
+            if (data.description) {
+                alert(data.description)
+                setSiteIdData(null)
+                return
+            }
+            setSiteIdData(data)
+            setSiteId(data.sites[0].id)
+        })
+    }
+
+    function useProfilePhotos() {
+        if (siteId === null || profilePhotos === "loading") return
+        setProfilePhotos("loading")
+        getVSCOProfilePhotos(siteId).then((data) => {
+            setProfilePhotos(data)
+        })
+    }
+
+    function useArticles() {
+        if (siteId === null || articles === "loading") return
+        setArticles("loading")
+        getVSCOArticles(siteId).then((data) => {
+            setArticles(data)
+        })
+    }
+
+    function useReposts() {
+        if (siteId === null || reposts === "loading") return
+        setReposts("loading")
+        getVSCOReposts(siteId).then((data) => {
+            setReposts(data)
+        })
+    }
+
+    return (
+        <div className="max-w-5xl mx-auto pt-16 px-5 md:px-0">
+            <h1 className="font-medium text-2xl">Accessing VSCO's API</h1>
+
+            <p className="text-gray-500 mt-1 mb-3">
+                <a
+                    className="text-blue-500 hover:underline"
+                    href="https://vsco.co" target="_blank" rel="noreferrer">VSCO</a>
+                {" "}is a popular photo sharing app. It has a public*
+                API that allows you to access photos and videos from the app. While not fully intended
+                for use by anyone, it has a public key that does not expire, and is global - meaning anyone can access
+                it
+                without limitations.
+            </p>
+            <p className="text-gray-500">
+                The main flaw in the security of VSCO's API is within their authentication. <strong>The API key is a bearer token.
+                It is not unique, is not tied to a specific user, and does not expire.</strong> This means that anyone can use it
+                for any use, and it will not be revoked.
+            </p>
+            <br/>
+            <small className="text-gray-400">
+                *while public, it is important to note that it should only be used for educational use only.
+                VSCO's <a className="text-blue-300 hover:underline" href="https://vsco.co/about/terms_of_use"
+                          target="_blank" rel="noreferrer">terms of service</a> forbids using their services for
+                commercial purposes.
+            </small>
+            <br/>
+            <br/>
+            <hr/>
+            <br/>
+            <h2 className="font-medium text-gray-700 text-xl">1) Retrieve your VSCO Site ID</h2>
+            <p
+                className="text-gray-500 mt-1 mb-3"
+            >
+                To access the API, you need to know your VSCO site ID. This is a unique identifier that is assigned to
+                each user.
+            </p>
+            <div className="flex items-center gap-2 mt-2">
+                <p className="text-white bg-green-400 rounded-lg p-2">GET</p>
+                <p className="text-blue-500 font-mono">
+                    https://vsco.co/api/2.0/sites?subdomain=
+                    <span
+                    className="text-red-500">{username.length > 0 ? username : "your-username"}</span>
+                </p>
+                {/*<small className="text-gray-300 hover:text-gray-400 cursor-pointer">COPY</small>*/}
+            </div>
+            {/* Display Headers */}
+            <div className="flex items-center gap-2 mt-2">
+                <small className="text-gray-500 font-mono">
+                    'Content-Type': 'application/json',
+                    <br/>
+                    'Accept': 'application/json',
+                    <br/>
+                    'Authorization' : 'Bearer 7356455548d0a1d886db010883388d08be84d0c9'
+                </small>
+            </div>
+            <br/>
+            <form onSubmit={(e) => {
+                e.preventDefault()
+                useSiteId()
+            }}>
+                <input
+                    className="border border-gray-300 rounded-lg p-2 w-full"
+                    placeholder="Enter your VSCO username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <button
+                    className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg p-2 w-full mt-2"
+                    onClick={useSiteId}
+                >
+                    {
+                        siteIdData === "loading" ? "LOADING" : "SEND REQUEST"
+                    }
+                </button>
+            </form>
+
+            {
+                siteIdData !== null && siteIdData !== "loading" && <div>
+                Your ID:{' '}
+                <code>
+                    {
+                        !siteId.description && siteIdData.sites[0].id
+                    }
+                </code>
+                </div>
+            }
+            <br/>
+            <br/>
+            <h2 className="font-medium text-gray-700 text-xl">2) Use your site ID for fetching your photos</h2>
+            <h3 className="text-gray-500 text-lg font-medium mt-2">From your gallery</h3>
+            <div className="flex items-center gap-2">
+                <p className="text-white bg-green-400 rounded-lg p-2">GET</p>
+                <p className="text-blue-500 font-mono">
+                    https://vsco.co/api/3.0/medias/profile?site_id={<span className="text-red-500">{siteId ? siteId : "siteId"}</span>}&limit=14&cursor=
+                </p>
+                {/*<small className="text-gray-300 hover:text-gray-400 cursor-pointer">COPY</small>*/}
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+                <small className="text-gray-500 font-mono">
+                    'Content-Type': 'application/json',
+                    <br/>
+                    'Accept': 'application/json',
+                    <br/>
+                    'Authorization' : 'Bearer 7356455548d0a1d886db010883388d08be84d0c9'
+                </small>
+            </div>
+            {
+                siteId && <button
+                    className="bg-blue-500 hover:bg-blue-400 text-white rounded-lg p-2 w-full mt-2"
+                    onClick={useProfilePhotos}
+                >
+                    {
+                        profilePhotos === "loading" ? "LOADING" : "SEND REQUEST"
+                    }
+                </button>
+            }
+            {
+                profilePhotos !== null && profilePhotos !== "loading" && <div className="flex mt-2 overflow-x-auto">
+                    {
+                        profilePhotos.media.map((photo, index) => {
+                            console.log(photo)
+                            return (
+                                    <img
+                                        key={index}
+                                        className="h-48 w-48 object-cover"
+                                        src={"https://" + photo.image.responsive_url} alt=""/>
+                            )
+                        })
+                    }
+                </div>
+            }
+            <h3 className="text-gray-500 text-lg font-medium mt-2">From your journal</h3>
+            <div className="flex items-center gap-2">
+                <p className="text-white bg-green-400 rounded-lg p-2">GET</p>
+                <p className="text-blue-500 font-mono">
+                    https://vsco.co/api/3.0/medias/articles?site_id={<span className="text-red-500">{siteId ? siteId : "siteId"}</span>}&page=1&size=12
+                </p>
+                {/*<small className="text-gray-300 hover:text-gray-400 cursor-pointer">COPY</small>*/}
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+                <small className="text-gray-500 font-mono">
+                    'Content-Type': 'application/json',
+                    <br/>
+                    'Accept': 'application/json',
+                    <br/>
+                    'Authorization' : 'Bearer 7356455548d0a1d886db010883388d08be84d0c9'
+                </small>
+            </div>
+            <h3 className="text-gray-500 text-lg font-medium mt-2">From your reposts</h3>
+            <div className="flex items-center gap-2">
+                <p className="text-white bg-green-400 rounded-lg p-2">GET</p>
+                <p className="text-blue-500 font-mono">
+                    https://vsco.co/api/3.0/medias/reposts?site_id={<span className="text-red-500">{siteId ? siteId : "siteId"}</span>}&page=1&size=20
+                </p>
+                {/*<small className="text-gray-300 hover:text-gray-400 cursor-pointer">COPY</small>*/}
+            </div>
+            <div className="flex items-center gap-2 mt-2">
+                <small className="text-gray-500 font-mono">
+                    'Content-Type': 'application/json',
+                    <br/>
+                    'Accept': 'application/json',
+                    <br/>
+                    'Authorization' : 'Bearer 7356455548d0a1d886db010883388d08be84d0c9'
+                </small>
+            </div>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p
-            className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}
-          >
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p
-            className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}
-          >
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p
-            className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}
-          >
-            Discover and deploy boilerplate example Next.js&nbsp;projects.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`${inter.className} mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p
-            className={`${inter.className} m-0 max-w-[30ch] text-sm opacity-50`}
-          >
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    )
 }
